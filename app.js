@@ -10,8 +10,10 @@ var routes = require('./routes/index');
 mongoose.connect(config.database);
 app.set('superSecret', config.secret);
 
-//app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
+
+// Views
+app.use(express.static(__dirname + '/views'));
 
 // To parse request params in req.body json format
 app.use(bodyParser.json());

@@ -8,18 +8,18 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.0/angular.min.js"></script>
 </head>
 <body ng-app="futApp">
-	<div ng-controller="userCtrl">
+	<form ng-controller="userCtrl" action="/authenticate" method="POST">
 	    <label for="username">Username:</label><br>
-        <input type="text" id="username" ng-model="login.username">
+        <input type="text" id="username" name="username" ng-model="login.username">
 
         <br>
 
         <label for="password">Password:</label><br>
-        <input type="password" id="password" ng-model="login.password">
+        <input type="password" id="password" name="password" ng-model="login.password">
 
         <br><br>
 
 		<button ng-click="sendLogin(login.username, login.password)">Enviar</button>
-	</div>
+	</form>
 </body>
 </html>

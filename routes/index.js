@@ -7,10 +7,6 @@ router.get('/', function(req, res) {
 	res.status(200).send('Hello!');
 });
 
-router.get('/ping', function(req, res) {
-	res.status(200).send('pong!');
-});
-
 router.get('/setup', function(req, res) {
 	// create a sample user
 	var nick = new User({
@@ -35,14 +31,11 @@ router.get('/setup', function(req, res) {
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
 router.post('/authenticate', function(req, res) {
-	//console.log(req);
-	console.log(req.params);
-	console.log(req.param.name);
 	console.log(req.body);
 
 	// find the user
 	User.findOne({
-		name: req.body.name
+		name: req.body.username
 	}, function(err, user) {
 		if (err) {
 			throw err;
@@ -113,13 +106,6 @@ router.use(function(req, res, next) {
 			message: 'No token provided.'
 		});
 	}
-});
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-	res.render('index', {
-		title: 'Express'
-	});
 });
 
 module.exports = router;
