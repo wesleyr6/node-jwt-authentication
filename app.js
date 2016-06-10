@@ -1,16 +1,19 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var logger = require('morgan');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var Schema = mongoose.Schema;
 var config = require('./config');
 var User = require('./models/user'); // get our mongoose model
-var port = process.env.PORT || 3000; // used to create, sign, and verify tokens
 
 // Connect to database
 mongoose.connect(config.database);
 app.set('superSecret', config.secret);
+
+//app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(logger('dev'));
 
 // To parse request params in req.body json format
 app.use(bodyParser.json());
@@ -20,7 +23,7 @@ app.use(bodyParser.urlencoded({
 
 // Dynamic routes
 app.get('/', function(req, res) {
-	res.send('Hello! The API is at http://localhost:' + port + '/api');
+	res.send('Hello!');
 });
 
 app.get('/setup', function(req, res) {
@@ -141,6 +144,4 @@ apiRoutes.get('/users', function(req, res) {
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
-// Starting server
-app.listen(port);
-console.log('Server running port ' + port);
+module.exports = app;
