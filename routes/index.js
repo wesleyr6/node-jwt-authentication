@@ -1,6 +1,6 @@
+var express = require('express');
 var jwt = require('jsonwebtoken');
 var User = require('../models/user');
-var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res) {
@@ -56,7 +56,7 @@ router.post('/authenticate', function(req, res) {
 			} else {
 				// if user is found and password is right
 				// create a token
-				var token = jwt.sign(user, app.get('superSecret'), {
+				var token = jwt.sign(user, req.app.get('superSecret'), {
 					expiresInMinutes: 1440 // expires in 24 hours
 				});
 
@@ -86,7 +86,7 @@ router.use(function(req, res, next) {
 	// decode token
 	if (token) {
 		// verifies secret and checks exp
-		jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+		jwt.verify(token, req.app.get('superSecret'), function(err, decoded) {
 			if (err) {
 				return res.json({
 					success: false,
