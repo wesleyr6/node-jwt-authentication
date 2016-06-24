@@ -1,0 +1,18 @@
+{{#unless isAuthenticated}}
+	<div class="logon-box">
+		<form action="/" method="POST">
+			<fieldset>
+	        	<input type="text" id="username" name="username" placeholder="username">
+	        	<input type="password" id="password" name="password" placeholder="password">
+	        </fieldset>
+
+			<div class="logon-box-action">
+				<button class="btn">Login</button>
+			</div>
+
+			<p>Don't have an account? <a href="/signup">Sign Up</a></p>
+		</form>
+	</div>
+{{else}}
+	<p>Hello <strong>{{user.name}}</strong>, you can do <a href="/logout">logout here</a></p>
+{{/unless}}
