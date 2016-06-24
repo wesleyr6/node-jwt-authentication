@@ -1,3 +1,4 @@
+{{isAuthenticated}}
 {{#unless isAuthenticated}}
 	<div class="logon-box">
 		<form action="/" method="POST">
@@ -14,5 +15,8 @@
 		</form>
 	</div>
 {{else}}
-	<p>Hello <strong>{{user.name}}</strong>, you can do <a href="/logout">logout here</a></p>
+	<p>Hello <strong>{{user.name}}</strong>, your token is: <br>
+	<strong>{{user.token}}</strong> <br><br>
+
+	You can do <a href="/logout">logout here</a></p>
 {{/unless}}

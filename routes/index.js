@@ -4,9 +4,15 @@ var User = require('../models/user');
 var router = express.Router();
 
 router.get('/', function(req, res) {
+	console.log('Request Get Home', req.session);
+
 	res.render('index', {
 		title: 'Home - MyApp',
-		layout: 'unlogged/main.hbs'
+		layout: req.session.token ? 'logged/main.hbs' : 'unlogged/main.hbs',
+		isAuthenticated: req.session.isAuthenticated,
+		user: {
+			token: req.session.token
+		}
 	});
 });
 
@@ -35,15 +41,14 @@ router.post('/', function(req, res) {
 				// if user is found and password is right
 				// create a token
 				var token = jwt.sign(user, req.app.get('superSecret'), {
-					expiresInMinutes: 1440 // expires in 24 hours
+					expiresIn: '24h'
 				});
 
-				// return the information including token as JSON
-				res.json({
-					success: true,
-					message: 'Enjoy your token!',
-					token: token
-				});
+				req.session.isAuthenticated = true;
+				req.session.token = token;
+
+				//return the information including token as JSON
+				res.redirect('/');
 			}
 		}
 	});
@@ -93,6 +98,7 @@ router.use(function(req, res, next) {
 					message: 'Failed to authenticate token.'
 				});
 			} else {
+				console.log(decoded);
 				// if everything is good, save to request for use in other router
 				req.decoded = decoded;
 				next();
