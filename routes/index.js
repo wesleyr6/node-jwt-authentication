@@ -4,35 +4,13 @@ var User = require('../models/user');
 var router = express.Router();
 
 router.get('/', function(req, res) {
-	res.status(200).send('Hello!');
-});
-
-router.get('/setup', function(req, res) {
-	// create a sample user
-	var nick = new User({
-		name: 'Wesley Amaro',
-		password: 'ps654321',
-		admin: true
-	});
-
-	// save the sample user
-	nick.save(function(err) {
-		if (err) {
-			throw err;
-		}
-
-		console.log('User saved successfully');
-
-		res.json({
-			success: true
-		});
+	res.render('index', {
+		title: 'Home - MyApp',
+		layout: 'unlogged/main.hbs'
 	});
 });
 
-// route to authenticate a user (POST http://localhost:8080/api/authenticate)
-router.post('/authenticate', function(req, res) {
-	console.log(req.body);
-
+router.post('/', function(req, res) {
 	// find the user
 	User.findOne({
 		name: req.body.username
@@ -71,7 +49,29 @@ router.post('/authenticate', function(req, res) {
 	});
 });
 
-// route to return all users (GET http://localhost:8080/api/users)
+router.get('/setup', function(req, res) {
+	// create a sample user
+	var nick = new User({
+		name: 'Wesley Amaro',
+		password: 'ps654321',
+		admin: true
+	});
+
+	// save the sample user
+	nick.save(function(err) {
+		if (err) {
+			throw err;
+		}
+
+		console.log('User saved successfully');
+
+		res.json({
+			success: true
+		});
+	});
+});
+
+// route to return all users
 router.get('/users', function(req, res) {
 	User.find({}, function(err, users) {
 		res.json(users);
