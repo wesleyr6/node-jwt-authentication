@@ -1,3 +1,12 @@
-# Basic test with JWT Authentication using MEAN Stack
+# JWT Authentication
+Authentication basic test using NodeJs and Express. <br />
+System authentication: npm jsonwebtoken<br />
+
+## Clone repository
+```git clone https://github.com/WesleyAmaro/node-jwt-authentication.git```
+
+## Install dependencies of the project
+```npm install```
+
 ## Running server
-nodemon --exec npm run-script dev
+```npm run dev```
