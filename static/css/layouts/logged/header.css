@@ -1,0 +1,15 @@
+.logged > header {
+	background-color: #284164;
+	padding: 15px 20px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.logged > header #logo {
+	color: #fff;
+	font-size: 2em;
+}
+
+.logged main {
+	padding: 0 20px;
+}

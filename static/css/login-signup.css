@@ -1,0 +1,41 @@
+.logon-box {
+	width: 250px;
+	height: 200px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -100px 0 0 -125px;
+	z-index: 1;
+}
+
+.logon-box fieldset {
+	border: 0;
+}
+
+.logon-box fieldset input[type="text"],
+.logon-box fieldset input[type="password"] {
+	padding: 10px;
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	font-size: 1.5em;
+	background-color: #fff;
+}
+
+.logon-box fieldset input + input {
+	border-top: 0px !important;
+}
+
+.logon-box .logon-box-action {
+	margin: 15px 0 25px 0;
+}
+
+.logon-box .logon-box-action button {
+	display: block;
+	width: 100%;
+}
+
+.logon-box .logon-box-action button:hover {
+	background: rgba(40,65,100,1);
+}
