@@ -17,6 +17,8 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
+	var _res = res;
+
 	// find the user
 	User.findOne({
 		name: req.body.username
@@ -32,24 +34,22 @@ router.post('/', function(req, res) {
 			});
 		} else if (user) {
 			// check if password matches
-			if (user.password !== req.body.password) {
-				res.json({
-					success: false,
-					message: 'Authentication failed. Wrong password.'
-				});
-			} else {
-				// if user is found and password is right
-				// create a token
-				var token = jwt.sign(user, req.app.get('superSecret'), {
-					expiresIn: '24h'
-				});
+			bcrypt.compare(req.body.password, user.password, function(err, res) {
+				if (res) {
+					// if user is found and password is right
+					// create a token
+					var token = jwt.sign(user, req.app.get('superSecret'), {
+						expiresIn: '24h'
+					});
 
-				req.session.isAuthenticated = true;
-				req.session.token = token;
+					req.session.isAuthenticated = true;
+					req.session.token = token;
 
-				//return the information including token as JSON
-				res.redirect('/');
-			}
+					_res.redirect('/');
+				} else {
+					throw 'Authentication failed. Wrong password.';
+				}
+			});
 		}
 	});
 });
@@ -119,17 +119,10 @@ router.get('/setup', function(req, res) {
 	});
 });
 
-// route to return all users
-router.get('/users', function(req, res) {
-	User.find({}, function(err, users) {
-		res.json(users);
-	});
-});
-
 // TODO: route middleware to verify a token
 router.use(function(req, res, next) {
 	// check header or url parameters or post parameters for token
-	var token = req.body.token || req.query.token || req.headers['x-access-token'];
+	var token = req.session.token || req.headers['x-access-token'];
 
 	// decode token
 	if (token) {
@@ -141,7 +134,7 @@ router.use(function(req, res, next) {
 					message: 'Failed to authenticate token.'
 				});
 			} else {
-				console.log(decoded);
+				//console.log(decoded);
 				// if everything is good, save to request for use in other router
 				req.decoded = decoded;
 				next();
