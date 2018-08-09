@@ -19,32 +19,20 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
 	var _res = res;
 
-	// find the user
-	User.findOne({
-		name: req.body.username
-	}, function(err, user) {
-		if (err) {
-			throw err;
-		}
+	User.findOne({ name: req.body.username }, function(err, user) {
+		if (err) throw err;
 
 		if (!user) {
 			res.json({
 				success: false,
 				message: 'Authentication failed. User not found. ' + user
 			});
-		} else if (user) {
-			// check if password matches
+		} else {
 			bcrypt.compare(req.body.password, user.password, function(err, res) {
 				if (res) {
-					// if user is found and password is right
-					// create a token
-					var token = jwt.sign(user, req.app.get('superSecret'), {
-						expiresIn: '24h'
-					});
-
+					var token = jwt.sign(user.toJSON(), req.app.get('superSecret'), { expiresIn: 604800 });
 					req.session.isAuthenticated = true;
 					req.session.token = token;
-
 					_res.redirect('/');
 				} else {
 					throw 'Authentication failed. Wrong password.';
@@ -55,9 +43,7 @@ router.post('/', function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
-	if(req.session){
-		req.session.destroy();
-	}
+	if(req.session) req.session.destroy();
 	res.redirect('/')
 });
 
@@ -70,63 +56,48 @@ router.get('/signup', function(req, res) {
 });
 
 router.post('/signup', function(req, res) {
-	var signupUser;
-
-	if (req.body.password !== req.body.passwordConfirm) {
+	if (req.body.password !== req.body.passwordConfirm)
 		throw 'Incorrect password confirmation';
-	}
 
 	bcrypt.genSalt(10, function(err, salt) {
 		bcrypt.hash(req.body.password, salt, function(err, hash) {
-			signupUser = new User({
+			var signupUser = new User({
 				name: req.body.username,
 				password: hash,
 				securityPhrase: req.body.securityPhrase
 			});
 
-			signupUser.save(function(err) {
-				if (err) {
-					throw err;
-				}
-
+			signupUser.save().then(function() {
 				console.log('SignUp: User saved successfully');
-
 				res.redirect('/');
+			}).catch(function(err) {
+				throw err
 			});
 		});
 	});
 });
 
 router.get('/setup', function(req, res) {
-	// create a sample user
 	var nick = new User({
-		name: 'Wesley Amaro',
-		password: 'ps654321',
+		name: 'admin',
+		password: 'admin',
 		admin: true
 	});
 
-	// save the sample user
-	nick.save(function(err) {
-		if (err) {
-			throw err;
-		}
-
+	nick.save().then(function(){
 		console.log('User saved successfully');
-
 		res.json({
 			success: true
 		});
+	}).catch(function(err) {
+		throw err
 	});
 });
 
-// TODO: route middleware to verify a token
 router.use(function(req, res, next) {
-	// check header or url parameters or post parameters for token
 	var token = req.session.token || req.headers['x-access-token'];
 
-	// decode token
 	if (token) {
-		// verifies secret and checks exp
 		jwt.verify(token, req.app.get('superSecret'), function(err, decoded) {
 			if (err) {
 				return res.json({
@@ -134,15 +105,11 @@ router.use(function(req, res, next) {
 					message: 'Failed to authenticate token.'
 				});
 			} else {
-				//console.log(decoded);
-				// if everything is good, save to request for use in other router
 				req.decoded = decoded;
 				next();
 			}
 		});
 	} else {
-		// if there is no token
-		// return an error
 		return res.status(403).send({
 			success: false,
 			message: 'No token provided.'

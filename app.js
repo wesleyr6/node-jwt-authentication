@@ -10,11 +10,13 @@ var routes = require('./routes/index');
 
 // Connect to database
 app.set('superSecret', config.secret);
-mongoose.connect(config.database, function(err) {
-	if (err) {
-		throw 'MongoDB: Refused connection';
-	}
+
+// Mongoose
+mongoose.connect(config.database, { useMongoClient: true })
+.then(function() {
 	console.log('MongoDB: Successfully connected');
+}).catch(function(err) {
+	throw err;
 });
 
 // Views
@@ -24,9 +26,7 @@ app.use('/views', express.static(__dirname + '/views'));
 // Configs
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: false
-}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressSession({
 	secret: process.env.SESSION_SECRET || 'safadao',
 	resave: false,
