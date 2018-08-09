@@ -1,12 +1,13 @@
 # JWT Authentication
-Authentication basic test using NodeJs and Express. <br />
-System authentication: npm jsonwebtoken<br />
-
-## Clone repository
-```git clone https://github.com/WesleyAmaro/node-jwt-authentication.git```
+Basic authentication test using NodeJs, Express and jsonwebtoken
 
 ## Install dependencies of the project
 ```npm install```
 
+## Database
+```config.js```
+
 ## Running server
 ```npm run dev```
+
+Notice: it will be available on port 3000
